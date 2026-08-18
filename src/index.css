@@ -487,14 +487,13 @@ main {
 =================================================================== */
 
 .hero {
-  max-width: var(--container);
+  /* max-width: ; */
   margin: 0 auto;
   padding: 48px 24px;
   position: relative;
-  min-height: 480px;
+  min-height: 82vh;
   display: flex;
   align-items: center;
-  border-radius: 0 0 24px 24px;
   background-image: url('./assets/hero-bg.png');
   background-size: cover;
   background-position: center;
@@ -503,7 +502,7 @@ main {
 .hero__text {
   position: relative;
   z-index: 1;
-  max-width: 600px;
+  max-width: 1000px;
 }
 
 .hero__title {
@@ -562,15 +561,15 @@ main {
 .hero__sparkle--large {
   width: 64px;
   height: 64px;
-  top: 8%;
-  right: -4%;
+  top: 15%;
+  right: 10%;
 }
 
 .hero__sparkle--small {
   width: 32px;
   height: 32px;
-  bottom: 18%;
-  left: -4%;
+  bottom: 55%;
+  left: 55%;
   animation-delay: -3s;
 }
 
@@ -596,13 +595,14 @@ main {
 
 .marquee__track {
   display: flex;
-  gap: 64px;
-  width: max-content;
-  animation: scrollLeft 22s linear infinite;
+  justify-content: space-around;
 }
 
-.marquee:hover .marquee__track {
-  animation-play-state: paused;
+.marquee__logo {
+  height: 32px;      /* apni pasand se adjust kar lena */
+  width: auto;
+  object-fit: contain;
+  opacity: 0.9;
 }
 
 .marquee__item {
