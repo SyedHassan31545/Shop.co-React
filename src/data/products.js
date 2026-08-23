@@ -2,6 +2,15 @@
 // Images are royalty-free placeholders (Picsum) seeded so each product
 // always gets the same photo.
 
+import img1 from '../assets/product-img-1.png'
+import img2 from '../assets/product-img-2.png'
+import img3 from '../assets/product-img-3.png'
+import img4 from '../assets/product-img-4.png'
+import img5 from '../assets/product-img-5.png'
+import img6 from '../assets/product-img-6.png'
+import img7 from '../assets/product-img-7.png'
+import img8 from '../assets/product-img-8.png'
+
 
 export const products = [
   {
@@ -11,7 +20,7 @@ export const products = [
     oldPrice: null,
     rating: 4.5,
     reviews: 128,
-    image: '/src/assets/product-img-1.png',
+    image: img1,
     style: 'casual',
     category: 'T-shirts',
     gender: 'men',
@@ -28,7 +37,7 @@ export const products = [
     oldPrice: 260,
     rating: 3.5,
     reviews: 89,
-    image: '/src/assets/product-img-2.png',
+    image: img2,
     style: 'casual',
     category: 'Jeans',
     gender: 'men',
@@ -45,7 +54,7 @@ export const products = [
     oldPrice: null,
     rating: 4.5,
     reviews: 63,
-    image: '/src/assets/product-img-3.png',
+    image: img3,
     style: 'formal',
     category: 'Shirts',
     gender: 'men',
@@ -62,7 +71,7 @@ export const products = [
     oldPrice: 160,
     rating: 4.5,
     reviews: 154,
-    image: '/src/assets/product-img-4.png',
+    image: img4,
     style: 'casual',
     category: 'T-shirts',
     gender: 'men',
@@ -79,7 +88,7 @@ export const products = [
     oldPrice: 232,
     rating: 5.0,
     reviews: 41,
-    image: '/src/assets/product-img-5.png',
+    image: img5,
     style: 'formal',
     category: 'Shirts',
     gender: 'men',
@@ -96,7 +105,7 @@ export const products = [
     oldPrice: null,
     rating: 4.0,
     reviews: 97,
-    image: '/src/assets/product-img-6.png',
+    image: img6,
     style: 'casual',
     category: 'T-shirts',
     gender: 'men',
@@ -113,7 +122,7 @@ export const products = [
     oldPrice: null,
     rating: 3.0,
     reviews: 52,
-    image: '/src/assets/product-img-7.png',
+    image: img7,
     style: 'gym',
     category: 'Shorts',
     gender: 'men',
@@ -130,7 +139,7 @@ export const products = [
     oldPrice: null,
     rating: 4.5,
     reviews: 73,
-    image: '/src/assets/product-img-8.png',
+    image: img8,
     style: 'casual',
     category: 'Jeans',
     gender: 'women',
