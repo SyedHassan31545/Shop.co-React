@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import ProductGrid from '../components/ProductGrid.jsx'
 import Reveal from '../components/Reveal.jsx'
-import { products } from '../data/products.js'
+import { useProducts } from '../context/ProductsContext.jsx'
 import { Link } from 'react-router-dom'
 
 const styles = ['all', 'casual', 'formal', 'party', 'gym']
@@ -14,13 +14,14 @@ const sortOptions = [
 ]
 
 const CATEGORIES = ['T-shirts', 'Shirts', 'Shorts', 'Jeans']
-const ALL_COLORS = [...new Set(products.flatMap((p) => p.colors || []))]
 
 const SIZES = ['XX-Small', 'X-Small', 'Small', 'Medium', 'Large', 'X-Large', 'XX-Large', '3X-Large', '4X-Large']
 const SIZE_LABEL_MAP = { S: 'Small', M: 'Medium', L: 'Large', XL: 'X-Large' }
 
 export default function Shop() {
   const [searchParams, setSearchParams] = useSearchParams()
+  const { products } = useProducts()
+  const ALL_COLORS = useMemo(() => [...new Set(products.flatMap((p) => p.colors || []))], [products])
   const styleParam = searchParams.get('style') || 'all'
   const categoryParam = searchParams.get('category') || 'all'
   const colorParam = searchParams.get('colors') || ''
@@ -107,7 +108,7 @@ export default function Shop() {
     }
 
     return list
-  }, [styleParam, saleOnly, searchParam, minPrice, maxPrice, sort, categoryParam, selectedColors, sizeParam])
+  }, [products, styleParam, saleOnly, searchParam, minPrice, maxPrice, sort, categoryParam, selectedColors, sizeParam])
 
   return (
     <section className="section shop-page">

@@ -1,15 +1,18 @@
 import React, { useState } from 'react'
-import { testimonials } from '../data/products.js'
+import { useProducts } from '../context/ProductsContext.jsx'
 import Reveal from './Reveal.jsx'
 
 const PER_PAGE = 3
 
 export default function Testimonials() {
+  const { testimonials } = useProducts()
   const pageCount = Math.ceil(testimonials.length / PER_PAGE)
   const [page, setPage] = useState(0)
 
   const next = () => setPage((p) => (p + 1) % pageCount)
   const prev = () => setPage((p) => (p - 1 + pageCount) % pageCount)
+
+  if (!testimonials.length) return null
 
   return (
     <section className="section testimonials">

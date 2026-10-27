@@ -7,9 +7,10 @@ import BrowseByStyle from '../components/BrowseByStyle.jsx'
 import Testimonials from '../components/Testimonials.jsx'
 import Newsletter from '../components/Newsletter.jsx'
 import Reveal from '../components/Reveal.jsx'
-import { newArrivals, topSelling } from '../data/products.js'
+import { useProducts } from '../context/ProductsContext.jsx'
 
 export default function Home() {
+  const { newArrivals, topSelling } = useProducts()
   return (
     <>
       <Hero />

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { products } from '../data/products.js'
+import { useProducts } from '../context/ProductsContext.jsx'
 import { useCart } from '../context/CartContext.jsx'
 import StarRating from '../components/StarRating.jsx'
 import ProductGrid from '../components/ProductGrid.jsx'
@@ -9,6 +9,7 @@ import Reveal from '../components/Reveal.jsx'
 export default function ProductDetail() {
   const { id } = useParams()
   const navigate = useNavigate()
+  const { products, loading } = useProducts()
   const product = products.find((p) => p.id === id)
   const { addToCart, toggleWishlist, isInWishlist } = useCart()
 
@@ -24,7 +25,9 @@ export default function ProductDetail() {
     setQty(1)
     setAdded(false)
     window.scrollTo({ top: 0, behavior: 'smooth' })
-  }, [id]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [id, product?.id]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  if (!product && loading) return <p className="empty-state">Loading…</p>
 
   if (!product) {
     return (

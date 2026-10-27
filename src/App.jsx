@@ -8,6 +8,10 @@ import Shop from './pages/Shop.jsx'
 import ProductDetail from './pages/ProductDetail.jsx'
 import Cart from './pages/Cart.jsx'
 import NotFound from './pages/NotFound.jsx'
+import Auth from './pages/Auth.jsx'
+import Orders from './pages/Orders.jsx'
+import Admin from './pages/Admin.jsx'
+import { RequireAuth, RequireAdmin } from './components/RouteGuards.jsx'
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -28,6 +32,10 @@ export default function App() {
           <Route path="/shop" element={<Shop />} />
           <Route path="/product/:id" element={<ProductDetail />} />
           <Route path="/cart" element={<Cart />} />
+          <Route path="/login" element={<Auth mode="login" />} />
+          <Route path="/register" element={<Auth mode="register" />} />
+          <Route path="/orders" element={<RequireAuth><Orders /></RequireAuth>} />
+          <Route path="/admin" element={<RequireAdmin><Admin /></RequireAdmin>} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>

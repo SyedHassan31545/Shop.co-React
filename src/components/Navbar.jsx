@@ -1,6 +1,7 @@
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { useCart } from '../context/CartContext.jsx'
+import { useAuth } from '../context/AuthContext.jsx'
 
 const shopLinks = [
   { label: 'Casual', style: 'casual' },
@@ -114,9 +115,7 @@ export default function Navbar() {
             <CartIcon />
             {cartCount > 0 && <span className="navbar__cart-badge">{cartCount}</span>}
           </Link>
-          <button type="button" className="navbar__icon-btn" aria-label="Account">
-            <UserIcon />
-          </button>
+          <AccountMenu />
         </div>
 
         <div className={`navbar__mobile-panel ${mobileOpen ? 'is-open' : ''}`}>
@@ -143,6 +142,53 @@ export default function Navbar() {
         </div>
       </nav>
     </header>
+  )
+}
+
+function AccountMenu() {
+  const { user, isAdmin, logout } = useAuth()
+  const [open, setOpen] = useState(false)
+  const ref = useRef(null)
+  const navigate = useNavigate()
+
+  // Bahar click karne par menu band
+  useEffect(() => {
+    const onClick = (e) => ref.current && !ref.current.contains(e.target) && setOpen(false)
+    document.addEventListener('mousedown', onClick)
+    return () => document.removeEventListener('mousedown', onClick)
+  }, [])
+
+  if (!user) {
+    return (
+      <Link to="/login" className="navbar__icon-btn" aria-label="Login">
+        <UserIcon />
+      </Link>
+    )
+  }
+
+  return (
+    <div className="account-menu" ref={ref}>
+      <button type="button" className="navbar__icon-btn" aria-label="Account" onClick={() => setOpen((v) => !v)}>
+        <UserIcon />
+      </button>
+      {open && (
+        <div className="account-menu__panel">
+          <p>Hi, {user.name.split(' ')[0]}</p>
+          <Link to="/orders" onClick={() => setOpen(false)}>My Orders</Link>
+          {isAdmin && <Link to="/admin" onClick={() => setOpen(false)}>Admin Panel</Link>}
+          <button
+            type="button"
+            onClick={() => {
+              logout()
+              setOpen(false)
+              navigate('/')
+            }}
+          >
+            Logout
+          </button>
+        </div>
+      )}
+    </div>
   )
 }
 

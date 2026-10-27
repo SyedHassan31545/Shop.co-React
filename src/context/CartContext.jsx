@@ -1,4 +1,6 @@
-import React, { createContext, useContext, useEffect, useMemo, useState } from 'react'
+import React, { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react'
+import { useAuth } from './AuthContext.jsx'
+import { api, imgUrl } from '../api.js'
 
 const CartContext = createContext(null)
 
@@ -19,14 +21,75 @@ export function CartProvider({ children }) {
   const [wishlist, setWishlist] = useState(() => readStorage(WISHLIST_KEY, []))
   const [toast, setToast] = useState(null)
 
-  // Persist cart + wishlist to localStorage whenever they change.
+  const { user } = useAuth()
+  const userId = user?.id
+  const syncedFor = useRef(null) // kis user ke liye state server se sync ho chuki ha
+  const prevUserId = useRef(null)
+
+  // Login: server ka cart/wishlist lo aur guest (localStorage) wale ke saath merge karo.
+  // Logout: cart/wishlist screen se saaf (DB ma safe rehta ha).
   useEffect(() => {
-    localStorage.setItem(CART_KEY, JSON.stringify(cart))
-  }, [cart])
+    if (!userId) {
+      if (prevUserId.current) {
+        setCart([])
+        setWishlist([])
+      }
+      prevUserId.current = null
+      syncedFor.current = null
+      return
+    }
+    prevUserId.current = userId
+    let cancelled = false
+    ;(async () => {
+      try {
+        const [serverCart, serverWish] = await Promise.all([api.get('/cart'), api.get('/wishlist')])
+        if (cancelled) return
+        const guestCart = readStorage(CART_KEY, [])
+        const guestWish = readStorage(WISHLIST_KEY, [])
+        const merged = new Map()
+        const lines = [...serverCart.items.map((i) => ({ ...i, image: imgUrl(i.image) })), ...guestCart]
+        for (const line of lines) {
+          const prev = merged.get(line.lineId)
+          merged.set(line.lineId, prev ? { ...prev, qty: Math.min(99, prev.qty + line.qty) } : line)
+        }
+        localStorage.removeItem(CART_KEY)
+        localStorage.removeItem(WISHLIST_KEY)
+        syncedFor.current = userId
+        setCart([...merged.values()])
+        setWishlist([...new Set([...serverWish.items, ...guestWish])])
+      } catch {
+        // Server na mile to local state hi chalti rahe
+      }
+    })()
+    return () => {
+      cancelled = true
+    }
+  }, [userId])
+
+  // Guest: localStorage ma save. Logged-in: DB ma save (debounced).
+  useEffect(() => {
+    if (!userId) {
+      localStorage.setItem(CART_KEY, JSON.stringify(cart))
+      return
+    }
+    if (syncedFor.current !== userId) return
+    const t = setTimeout(() => {
+      api
+        .put('/cart', { items: cart.map(({ id, size, color, qty }) => ({ id, size, color, qty })) })
+        .catch(() => {})
+    }, 300)
+    return () => clearTimeout(t)
+  }, [cart, userId])
 
   useEffect(() => {
-    localStorage.setItem(WISHLIST_KEY, JSON.stringify(wishlist))
-  }, [wishlist])
+    if (!userId) {
+      localStorage.setItem(WISHLIST_KEY, JSON.stringify(wishlist))
+      return
+    }
+    if (syncedFor.current !== userId) return
+    const t = setTimeout(() => api.put('/wishlist', { items: wishlist }).catch(() => {}), 300)
+    return () => clearTimeout(t)
+  }, [wishlist, userId])
 
   // Auto-dismiss toast notifications.
   useEffect(() => {
